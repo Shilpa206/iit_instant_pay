@@ -17,6 +17,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -37,7 +38,19 @@ public class HomeController {
 	private BankAccount bankAccount;
 
 	@FXML
-	private Tab tabPane;
+	private TabPane tabPane;
+	
+    @FXML
+    private Tab tabRecentTransactions;
+    
+    @FXML
+    private Tab tabPayees;
+    
+    @FXML
+    private Tab tabAnalytics;
+    
+    @FXML
+    private Tab tabAdmin;
 
 	// Home
 	@FXML
@@ -101,8 +114,7 @@ public class HomeController {
 		} else {
 			try {
 				dao.addPayee(this.bankAccount.getAccountId(), payeeEmail);
-			}
-			catch(IllegalStateException ise) {
+			} catch (IllegalStateException ise) {
 				Alert alert = CommonUtilities.getErrorWindow("Unable to add payee!", ise.getMessage());
 				alert.showAndWait();
 			}
@@ -111,35 +123,32 @@ public class HomeController {
 			this.populateHome(this.bankAccount.getAccountId());
 		}
 	}
-	
-	
-	// Admin 
+
+	// Admin
 	@FXML
 	private TextField tfAdminSearchAccountId;
 
 	@FXML
 	private Button btnAdminSearchAccount;
-	
 
 	@FXML
 	private Button btnAdminUpdateAccount;
 
 	@FXML
 	private TextField tfAdminAccountId;
-	
+
 	@FXML
 	private TextField tfAdminName;
-	
+
 	@FXML
 	private TextField tfAdminEmail;
-	
+
 	@FXML
 	private TextField tfAdminBalance;
-	
 
 	@FXML
 	private Button btnAdminDeletePayee;
-	
+
 	@FXML
 	private TableView<Payee> tableAdminPayees;
 
@@ -155,73 +164,63 @@ public class HomeController {
 	@FXML
 	void btnAdminSearchAccountOnClicked(ActionEvent event) {
 		DaoModel dao = new DaoModel();
-		
+
 		Integer accountId = Integer.parseInt(tfAdminSearchAccountId.getText());
 
 		try {
 			BankAccount bankAccount = dao.getBankAccountById(accountId);
-			
+
 			// Re-populate the page with new date
 			this.populateAdmin(bankAccount);
-		}
-		catch(IllegalStateException ise) {
+		} catch (IllegalStateException ise) {
 			Alert alert = CommonUtilities.getErrorWindow("Account not found!", ise.getMessage());
 			alert.showAndWait();
 		}
 	}
-	
+
 	@FXML
 	void btnAdminUpdateAccountOnClicked(ActionEvent event) {
 		DaoModel dao = new DaoModel();
-		
+
 		try {
-			dao.updateBankAccount(
-					Integer.parseInt(tfAdminAccountId.getText()),
-					tfAdminEmail.getText(),
-					tfAdminName.getText(),
-					Double.parseDouble(tfAdminBalance.getText())
-			);
-			
+			dao.updateBankAccount(Integer.parseInt(tfAdminAccountId.getText()), tfAdminEmail.getText(),
+					tfAdminName.getText(), Double.parseDouble(tfAdminBalance.getText()));
+
 			Alert alert = CommonUtilities.getSuccessWindow("Success!", "Account successfully updated!");
 			alert.showAndWait();
-			
+
 			BankAccount bankAccount = dao.getBankAccountById(Integer.parseInt(tfAdminAccountId.getText()));
-			
+
 			// Re-populate the page with new date
 			this.populateAdmin(bankAccount);
-		}
-		catch(IllegalStateException ise) {
+		} catch (IllegalStateException ise) {
 			Alert alert = CommonUtilities.getErrorWindow("Account not found!", ise.getMessage());
 			alert.showAndWait();
 		}
 	}
-	
+
 	@FXML
 	void btnAdminDeletePayeeOnClicked(ActionEvent event) {
 		DaoModel dao = new DaoModel();
-		
+
 		try {
 			Payee payee = this.tableAdminPayees.getSelectionModel().selectedItemProperty().getValue();
 
-			dao.deletePayee(
-				Integer.parseInt(tfAdminAccountId.getText()),
-				payee.getAccountId()
-			);
-			
+			dao.deletePayee(Integer.parseInt(tfAdminAccountId.getText()), payee.getAccountId());
+
 			Alert alert = CommonUtilities.getSuccessWindow("Success!", "Payee successfully deleted!");
 			alert.showAndWait();
-			
+
 			BankAccount bankAccount = dao.getBankAccountById(Integer.parseInt(tfAdminAccountId.getText()));
-			
+
 			// Re-populate the page with new date
 			this.populateAdmin(bankAccount);
-		}
-		catch(IllegalStateException ise) {
+		} catch (IllegalStateException ise) {
 			Alert alert = CommonUtilities.getErrorWindow("Unable to delete payee!", ise.getMessage());
 			alert.showAndWait();
 		}
 	}
-	
+
 	@FXML
 	void btnSignOutOnClicked(ActionEvent event) throws IOException {
 		this.loadStart(event);
@@ -230,7 +229,7 @@ public class HomeController {
 	@FXML
 	void btnSendMoneyOnClicked(ActionEvent event) {
 		DaoModel dao = new DaoModel();
-		
+
 		Payee payee = this.tablePayees.getSelectionModel().selectedItemProperty().getValue();
 
 		TextInputDialog tdAmount = new TextInputDialog();
@@ -262,19 +261,18 @@ public class HomeController {
 		stageRemarks.showAndWait();
 
 		String remarks = tdRemarks.getEditor().getText();
-		
+
 		String message = dao.executeTransfer(bankAccount.getAccountId(), payee.getAccountId(), amount, remarks);
-		
-		if(message.toLowerCase().contains("success")) {
+
+		if (message.toLowerCase().contains("success")) {
 			Alert successWindow = CommonUtilities.getSuccessWindow("Transaction Successful!",
 					"$" + amount + " successfully sent to " + payee.getName() + "<" + payee.getEmail() + ">");
 			successWindow.showAndWait();
-		}
-		else {
+		} else {
 			Alert successWindow = CommonUtilities.getErrorWindow("Transaction failed!", message);
 			successWindow.showAndWait();
 		}
-		
+
 		// Re-populate the page with new date
 		this.populateHome(this.bankAccount.getAccountId());
 	}
@@ -316,13 +314,12 @@ public class HomeController {
 			}
 		});
 	}
-	
+
 	/*
 	 * Populates the values in admin screen using information of given account
 	 */
 	public void populateAdmin(BankAccount bankAccount) {
 		System.out.println("Populating admin screen for email: " + bankAccount.getEmail());
-
 
 		this.tfAdminAccountId.setText(bankAccount.getAccountId().toString());
 		this.tfAdminName.setText(bankAccount.getName());
@@ -335,14 +332,15 @@ public class HomeController {
 		tblAdminPayeesColPayeeEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
 
 		this.tableAdminPayees.getItems().setAll(bankAccount.getPayees());
-		
+
 		btnAdminUpdateAccount.setDisable(false);
 
-		this.tableAdminPayees.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-			if (newSelection != null) {
-				btnAdminDeletePayee.setDisable(false);
-			}
-		});
+		this.tableAdminPayees.getSelectionModel().selectedItemProperty()
+				.addListener((obs, oldSelection, newSelection) -> {
+					if (newSelection != null) {
+						btnAdminDeletePayee.setDisable(false);
+					}
+				});
 	}
 
 	void loadStart(Event event) throws IOException {
@@ -356,5 +354,15 @@ public class HomeController {
 
 		stage.setScene(scene);
 		stage.show();
+	}
+
+	public void showUserTabs() {
+		tabPane.getTabs().remove(tabAnalytics);
+		tabPane.getTabs().remove(tabAdmin);
+	}
+
+	public void showAdminTabs() {
+		tabPane.getTabs().remove(tabRecentTransactions);
+		tabPane.getTabs().remove(tabPayees);
 	}
 }

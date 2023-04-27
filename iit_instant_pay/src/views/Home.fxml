@@ -33,9 +33,9 @@
          </children></AnchorPane>
    </left>
    <center>
-      <TabPane prefHeight="200.0" prefWidth="200.0" stylesheets="@Common.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+      <TabPane fx:id="tabPane" prefHeight="200.0" prefWidth="200.0" stylesheets="@Common.css" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
         <tabs>
-          <Tab fx:id="tabPane" text="Recent Transactions">
+          <Tab fx:id="tabRecentTransactions" text="Recent Transactions">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainscreen">
                      <children>
@@ -58,7 +58,7 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-          <Tab text="Payees">
+          <Tab fx:id="tabPayees" text="Payees">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainscreen">
                      <children>
@@ -83,12 +83,12 @@
                      </children></AnchorPane>
             </content>
           </Tab>
-            <Tab text="Analytics">
+            <Tab fx:id="tabAnalytics" text="Analytics">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
               </content>
             </Tab>
-            <Tab text="Admin">
+            <Tab fx:id="tabAdmin" text="Admin">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainscreen">
                      <children>

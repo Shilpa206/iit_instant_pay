@@ -18,7 +18,8 @@ import models.DaoModel;
 import utils.CommonUtilities;
 
 public class StartController {
-
+	private final Integer ADMIN_ACCOUNT_ID = 999999;
+	
 	private Stage stage;
 	private Scene scene;
 
@@ -88,6 +89,13 @@ public class StartController {
 		HomeController homeController = loader.getController();
 		homeController.populateHome(accountId);
 
+		if(accountId.intValue() == ADMIN_ACCOUNT_ID.intValue()) {
+			homeController.showAdminTabs();
+		}
+		else {
+			homeController.showUserTabs();
+		}
+				
 		stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 		scene = new Scene(root);
 		stage.setScene(scene);
