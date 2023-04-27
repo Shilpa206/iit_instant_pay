@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.shape.*?>
+<?import de.jensd.fx.glyphs.fontawesome.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600" prefWidth="1000" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StartController">
+   <left>
+      <AnchorPane prefHeight="600" prefWidth="200.0" styleClass="sidebar" stylesheets="@Common.css" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="73.0" fitWidth="193.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../resources/images/iit_instant_pay_logo.png" />
+               </image>
+            </ImageView>
+            <Line endX="100.0" layoutX="100.0" layoutY="83.0" opacity="0.6" startX="-100.0" stroke="WHITE" strokeLineCap="ROUND" strokeLineJoin="BEVEL" />
+         </children></AnchorPane>
+   </left>
+   <center>
+      <AnchorPane prefHeight="600" prefWidth="200.0" styleClass="mainscreen" stylesheets="@Common.css" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="307.0" layoutY="42.0" styleClass="h1black" text="Existing User?" />
+            
+            <TextField fx:id="tfLoginEmail" layoutX="306.0" layoutY="96.0" prefWidth="250" promptText="Email" />
+            <PasswordField fx:id="tfLoginPassword" layoutX="306.0" layoutY="134.0" prefWidth="250" promptText="Password" />
+            <FontAwesomeIcon glyphName="ENVELOPE" layoutX="268.0" layoutY="122.0" size="2em" />
+            <FontAwesomeIcon glyphName="LOCK" layoutX="273.0" layoutY="160.0" size="2em" />
+            <Button fx:id="btnLogin" layoutX="306.0" layoutY="169.0" mnemonicParsing="false" onAction="#btnLoginOnClicked" prefHeight="31.0" prefWidth="250" text="Login" />
+            
+            <Line endX="600.0" endY="380.0" fill="black" layoutX="100.0" layoutY="-135.0" opacity="0.6" startX="0" startY="380.0" stroke="black" strokeLineJoin="BEVEL" strokeWidth="2.0" />
+            <Button fx:id="btnRegister" layoutX="306.0" layoutY="458.0" mnemonicParsing="false" onAction="#btnRegisterOnClicked" prefHeight="31.0" prefWidth="250" text="Register" />
+            <FontAwesomeIcon glyphName="LOCK" layoutX="273.0" layoutY="410.0" size="2em" />
+            <FontAwesomeIcon glyphName="ENVELOPE" layoutX="268.0" layoutY="331.0" size="2em" />
+            <PasswordField fx:id="tfRegisterPassword" layoutX="306.0" layoutY="384.0" prefWidth="250" promptText="Password" />
+            <TextField fx:id="tfRegisterEmail" layoutX="306.0" layoutY="305.0" prefWidth="250" promptText="Email" />
+            <Label layoutX="305.0" layoutY="259.0" prefWidth="250" styleClass="h1black" text="New User?" />
+            <TextField fx:id="tfRegisterName" layoutX="306.0" layoutY="344.0" prefWidth="250" promptText="Name" />
+            <FontAwesomeIcon glyphName="USER" layoutX="271.0" layoutY="370.0" size="2em" />
+            <PasswordField fx:id="tfRegisterConfirmPassword" layoutX="307.0" layoutY="423.0" prefWidth="250" promptText="Confirm Password" />
+            <FontAwesomeIcon glyphName="LOCK" layoutX="273.0" layoutY="449.0" size="2em" />
+         </children>
+      </AnchorPane>
+   </center>
+</BorderPane>

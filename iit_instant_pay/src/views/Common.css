@@ -1,0 +1,84 @@
+.sidebar{
+	-fx-background-color: linear-gradient(to bottom, #820202, #1b1b1b);
+}
+
+.h1white{
+	-fx-font-size: 24;
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+}
+
+.h2white{
+	-fx-font-size: 18;
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+}
+
+.h3white{
+	-fx-font-size: 16;
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+}
+
+.paragraphwhite{
+	-fx-font-size: 12;
+	-fx-text-fill: white;
+}
+
+.mainscreen{
+	-fx-background-color: #C0C0C0;
+}
+
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: #820202;
+}
+
+.tab-label {
+    -fx-text-fill: #820202;
+    -fx-font-weight: bold;
+}
+
+.table-cell {
+    -fx-alignment: CENTER;
+}
+
+.h1black{
+	-fx-font-size: 24;
+	-fx-text-fill: black;
+	-fx-font-weight: bold;
+}
+
+.h2black{
+	-fx-font-size: 18;
+	-fx-text-fill: black;
+	-fx-font-weight: bold;
+}
+
+.h3black{
+	-fx-font-size: 16;
+	-fx-text-fill: black;
+	-fx-font-weight: bold;
+}
+
+.paragraphblack{
+	-fx-font-size: 12;
+	-fx-text-fill: black;
+}
+
+.button {
+	-fx-background-color: #820202;
+	-fx-text-fill: white;
+}
+
+.subregion{
+	-fx-border-color: #4d0f0f;
+	-fx-border-radius: 10;
+	-fx-border-width: 1;
+	-fx-background-color: #D0D0D0;
+}
+
+
+.button:hover{
+	-fx-background-color: #202020;
+}
