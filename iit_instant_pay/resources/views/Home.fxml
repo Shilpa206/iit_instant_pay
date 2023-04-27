@@ -15,7 +15,7 @@
          <children>
             <ImageView fitHeight="73.0" fitWidth="193.0" layoutX="3.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../resources/images/iit_instant_pay_logo.png" />
+                  <Image url="@../images/iit_instant_pay_logo.png" />
                </image>
             </ImageView>
             <Line endX="100.0" layoutX="100.0" layoutY="83.0" opacity="0.6" startX="-100.0" stroke="WHITE" strokeLineCap="ROUND" strokeLineJoin="BEVEL" />

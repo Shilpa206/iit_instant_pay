@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
-import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import utils.CommonUtilities;
@@ -28,20 +26,30 @@ public class DaoModel {
 		db = new DBConnect();
 	}
 
+	
 	// Private method that returns connection to the DB initialized in constructor
 	private Connection getDbConn() throws SQLException {
+		DbCredentials dbCredentials;
+		
+		try {
+			dbCredentials = DbCredentials.getCredentials();	
+		}
+		catch(Exception e) {
+			throw new SQLException("Cannot load DB Credentials. " + e.getMessage());
+		}
+		
 		String protocol = "jdbc";
 		String subprotocol = "mysql";
-		String host = "localhost";
-		short port = 3306;
-		String schema = "iit_instant_pay";
-		String connOptions = "autoReconnect=true&useSSL=false";
+		String host = dbCredentials.getHost();
+		short port = dbCredentials.getPort();
+		String schema = dbCredentials.getSchema();
+		String connOptions = dbCredentials.getConnOptions();
 
 		String connUrl = host + ":" + port + "/" + schema + "?" + connOptions;
 
 		// Database credentials
-		String username = "root";
-		String password = "password";
+		String username = dbCredentials.getUsername();
+		String password = dbCredentials.getPassword();
 
 		return db.getConnection(protocol, subprotocol, connUrl, username, password);
 	}

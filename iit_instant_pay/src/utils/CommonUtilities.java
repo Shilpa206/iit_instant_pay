@@ -1,11 +1,10 @@
 package utils;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.MessageDigest;
-
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
@@ -13,36 +12,54 @@ import javafx.stage.Stage;
 
 
 public class CommonUtilities {
+	public static final String RESOURCES_DIR_PATH = "RESOURCES_DIR_PATH";
+	
 	public static URL getViewUrl(String viewFileName) throws FileNotFoundException {
+		String resourcesDirPath = System.getenv(RESOURCES_DIR_PATH);
 		
-		URL fileUrl = CommonUtilities.class.getResource("../views/" + viewFileName);
+		if(resourcesDirPath == null) {
+			throw new FileNotFoundException("Resources directory path not found. Set env variable: "+ RESOURCES_DIR_PATH);
+		}
 		
-		if(fileUrl == null) {
-			throw new FileNotFoundException("View file not found: "+ viewFileName);
+		String viewFilePath = resourcesDirPath + "/views/" + viewFileName;
+		
+		File viewFile = new File(viewFilePath);
+		
+		System.out.println("View file path: " + viewFilePath);
+		
+		if(!viewFile.exists()) {
+			throw new FileNotFoundException("View file not found: "+ viewFilePath);
 		}
 		else {
 			try {
-				return fileUrl.toURI().normalize().toURL();	
+				return viewFile.toURI().normalize().toURL();	
 			}
-			catch (MalformedURLException | URISyntaxException e) {
-				throw new FileNotFoundException("Unable to fetch view file: " + viewFileName + " " + e.getMessage());	
+			catch (MalformedURLException e) {
+				throw new FileNotFoundException("Unable to fetch view file: " + viewFilePath + " " + e.getMessage());	
 			}
 		}
-	}	
+	}
 	
 	public static URL getImageUrl(String imageFileName) throws FileNotFoundException {
+		String resourcesDirPath = System.getenv(RESOURCES_DIR_PATH);
 		
-		URL fileUrl = CommonUtilities.class.getResource("../resources/images/" + imageFileName);
+		if(resourcesDirPath == null) {
+			throw new FileNotFoundException("Resources directory path not found. Set env variable: "+ RESOURCES_DIR_PATH);
+		}
 		
-		if(fileUrl == null) {
-			throw new FileNotFoundException("Image file not found: "+ imageFileName);
+		String imageFilePath = resourcesDirPath + "/images/" + imageFileName;
+		
+		File imageFile = new File(imageFilePath);
+		
+		if(!imageFile.exists()) {
+			throw new FileNotFoundException("Image file not found: "+ imageFilePath);
 		}
 		else {
 			try {
-				return fileUrl.toURI().normalize().toURL();	
+				return imageFile.toURI().normalize().toURL();	
 			}
-			catch (MalformedURLException | URISyntaxException e) {
-				throw new FileNotFoundException("Unable to fetch image file: " + imageFileName + " " + e.getMessage());	
+			catch (MalformedURLException e) {
+				throw new FileNotFoundException("Unable to fetch image file: " + imageFilePath + " " + e.getMessage());	
 			}
 		}
 	}	

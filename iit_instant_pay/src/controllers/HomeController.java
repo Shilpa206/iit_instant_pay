@@ -350,7 +350,7 @@ public class HomeController {
 		
 		ObservableList<PieChart.Data> pieValues = FXCollections.observableArrayList(dao.getCaseReserveShares());
 		
-		
+		this.pieAnalyticsCashReserve.getData().clear();
 		this.pieAnalyticsCashReserve.getData().setAll(pieValues);
 		this.pieAnalyticsCashReserve.getData().forEach(data -> {
 			String percentage = String.format("%.2f%%", (data.getPieValue()));
@@ -364,12 +364,14 @@ public class HomeController {
 		// Users with most credits 
 		XYChart.Series<String, Integer> mostCreditsSeries = new XYChart.Series<>(); 
 		mostCreditsSeries.getData().setAll(dao.getAccountsWithMostCredits());
+		this.barChartMostCredits.getData().clear();
 		this.barChartMostCredits.getData().add(mostCreditsSeries);
 		this.barChartMostCredits.setLegendVisible(false);
 		
 		// Users with most debits
 		XYChart.Series<String, Integer> mostDebitsSeries = new XYChart.Series<>(); 
 		mostDebitsSeries.getData().setAll(dao.getAccountsWithMostDebits());
+		this.barChartMostDebits.getData().clear();
 		this.barChartMostDebits.getData().add(mostDebitsSeries);
 		this.barChartMostDebits.setLegendVisible(false);
 	}
