@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import utils.CommonUtilities;
+
 /*
  * Database Access Object
  * Class to interact with database
@@ -56,9 +58,15 @@ public class DaoModel {
 			// Get to first record
 			results.next();
 
+			/* 
+			 * Passwords are hashed (using SHA256) before storing them in DB 
+			 * Because user enters the raw password, we will hash it before comparing with the password stored in DB
+			 */
+			String hashedPassword = CommonUtilities.encryptPassword(password);
+			
 			String actualPassword = results.getString("Password");
 
-			if (!password.equals(actualPassword)) {
+			if (!hashedPassword.equals(actualPassword)) {
 				throw new IllegalAccessException(String.format("Incorrect Username / Password.", email));
 			}
 
@@ -244,9 +252,11 @@ public class DaoModel {
 
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
 
+			String encryptedPassword = CommonUtilities.encryptPassword(password);
+			
 			preparedStmt.setString(1, name);
 			preparedStmt.setString(2, email);
-			preparedStmt.setString(3, password);
+			preparedStmt.setString(3, encryptedPassword);
 			preparedStmt.setDouble(4, initialBalance);
 
 			preparedStmt.executeUpdate();
