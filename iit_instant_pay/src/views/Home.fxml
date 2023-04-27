@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.shape.*?>
 <?import de.jensd.fx.glyphs.fontawesome.*?>
 <?import javafx.scene.image.*?>
@@ -30,6 +31,12 @@
             <TextField fx:id="tfAccountNumber" editable="false" layoutX="14.0" layoutY="170.0" prefHeight="31.0" prefWidth="141.0" />
             <Label layoutX="14.0" layoutY="142.0" styleClass="h3white" text="Account Number" />
             <Label layoutX="13.0" layoutY="238.0" styleClass="h2white" text="\$" />
+            <Button fx:id="btnReload" layoutX="14.0" layoutY="506.0" mnemonicParsing="false" onAction="#btnReloadOnClicked" prefHeight="33.0" prefWidth="174.0" text=" Reload">
+                <graphic>
+                  <FontAwesomeIcon fill="WHITE" glyphName="REFRESH" size="1.5em" />
+               </graphic>
+            </Button>
+            
          </children></AnchorPane>
    </left>
    <center>
@@ -85,7 +92,42 @@
           </Tab>
             <Tab fx:id="tabAnalytics" text="Analytics">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainscreen">
+                     <children>
+                        <AnchorPane layoutX="7.0" layoutY="12.0" prefHeight="539.0" prefWidth="372.0" styleClass="subregion">
+                           <children>
+                              <Label layoutX="29.0" layoutY="16.0" styleClass="h2black" text="Total Cash Reserve: $" />
+                              <TextField fx:id="tfAnalyticsTotalCashReserve" editable="false" layoutX="211.0" layoutY="14.0" prefHeight="31.0" prefWidth="120.0" />
+                              <PieChart fx:id="pieAnalyticsCashReserve" layoutX="5.0" layoutY="102.0" prefHeight="426.0" prefWidth="355.0" />
+                              <Label layoutX="22.0" layoutY="67.0" styleClass="h2black" text="Top 10 accounts by cash reserve share" />
+                              <Line endX="240.0" layoutX="113.0" layoutY="59.0" startX="-100.0" />
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="390.0" layoutY="12.0" prefHeight="265.0" prefWidth="394.0" styleClass="subregion">
+                           <children>
+                              <BarChart fx:id="barChartMostCredits" layoutX="7.0" layoutY="32.0" prefHeight="232.0" prefWidth="379.0" stylesheets="@GreenBarChart.css">
+                                <xAxis>
+                                  <CategoryAxis side="BOTTOM" />
+                                </xAxis>
+                                <yAxis>
+                                  <NumberAxis side="LEFT" />
+                                </yAxis>
+                              </BarChart>
+                              <Label layoutX="82.0" layoutY="6.0" styleClass="h2black" text="Accounts with most credits" />
+                           </children></AnchorPane>
+                        <AnchorPane layoutX="390.0" layoutY="286.0" prefHeight="265.0" prefWidth="394.0" styleClass="subregion">
+                           <children>
+                              <BarChart fx:id="barChartMostDebits" layoutX="8.0" layoutY="33.0" prefHeight="233.0" prefWidth="379.0" stylesheets="@RedBarChart.css">
+                                 <xAxis>
+                                    <CategoryAxis side="BOTTOM" />
+                                 </xAxis>
+                                 <yAxis>
+                                    <NumberAxis side="LEFT" />
+                                 </yAxis>
+                              </BarChart>
+                              <Label layoutX="87.0" layoutY="6.0" styleClass="h2black" text="Accounts with most debits" />
+                           </children></AnchorPane>
+                     </children></AnchorPane>
               </content>
             </Tab>
             <Tab fx:id="tabAdmin" text="Admin">

@@ -8,6 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import utils.CommonUtilities;
 
 /*
@@ -221,7 +224,7 @@ public class DaoModel {
 			ResultSet results = selectStmt.executeQuery(sql);
 
 			if (!results.isBeforeFirst()) {
-				System.out.println("No recent transactions found.");
+				System.out.println("No payees found for: " + accountId);
 			} else {
 				while (results.next()) {
 					Payee p = new Payee();
@@ -352,6 +355,109 @@ public class DaoModel {
 			preparedStmt.executeUpdate();
 		} catch (SQLException se) {
 			throw new IllegalStateException("Unable to remove payee. " + se.getMessage());
+		}
+	}
+	
+	
+	public List<PieChart.Data> getCaseReserveShares() {
+		List<PieChart.Data> data = new ArrayList<>();
+		try (Connection conn = getDbConn()) {
+			Statement selectStmt = conn.createStatement();
+			String sql = String.format("""
+					SELECT a.Name, ROUND((a.Balance / t.TotalBalance) * 100, 1) AS ReserveShare 
+					FROM %s a, (SELECT SUM(Balance) TotalBalance FROM %s WHERE AccountId != 999999) t 
+					WHERE a.AccountId != 999999
+					ORDER BY ROUND((a.Balance / t.TotalBalance) * 100, 1) DESC
+					LIMIT 10;
+					""", ACCOUNTS, ACCOUNTS);
+
+			ResultSet results = selectStmt.executeQuery(sql);
+
+			while (results.next()) {
+				String name = results.getString("Name");
+				Double balanceShare = results.getDouble("ReserveShare");
+
+				data.add(new PieChart.Data(name, balanceShare));
+			}
+			
+			return data;			
+		} catch (SQLException se) {
+			throw new IllegalStateException("Unable to get cash reserver shares. " + se.getMessage());
+		}
+	}
+	
+	public Long getTotalCaseReserve() {
+		try (Connection conn = getDbConn()) {
+			Statement selectStmt = conn.createStatement();
+			String sql = String.format("""
+					SELECT SUM(Balance) TotalBalance FROM %s WHERE AccountId != 999999
+					""", ACCOUNTS);
+
+			ResultSet results = selectStmt.executeQuery(sql);
+			
+			results.next();
+			
+			return results.getLong("TotalBalance");	
+		} catch (SQLException se) {
+			throw new IllegalStateException("Unable to get total cash reserve. " + se.getMessage());
+		}
+	}
+	
+	public List<XYChart.Data<String, Integer>> getAccountsWithMostCredits() {
+		List<XYChart.Data<String, Integer>> data = new ArrayList<>();
+		
+		try (Connection conn = getDbConn()) {
+			Statement selectStmt = conn.createStatement();
+			String sql = String.format("""
+					SELECT ta.Name, COUNT(1) NumberOfCredits
+					FROM Transactions t 
+					INNER JOIN Accounts ta ON t.ToAccountId = ta.AccountId
+					GROUP BY ta.Name
+					ORDER BY COUNT(1) DESC
+					LIMIT 5;
+					""", TRANSACTIONS, ACCOUNTS);
+
+			ResultSet results = selectStmt.executeQuery(sql);
+
+			while (results.next()) {
+				String name = results.getString("Name");
+				Integer numberOfCredits = results.getInt("NumberOfCredits");
+					
+				data.add(new XYChart.Data<String, Integer>(name, numberOfCredits));
+			}
+			
+			return data;			
+		} catch (SQLException se) {
+			throw new IllegalStateException("Unable to get accounts with most credits. " + se.getMessage());
+		}
+	}
+	
+	public List<XYChart.Data<String, Integer>> getAccountsWithMostDebits() {
+		List<XYChart.Data<String, Integer>> data = new ArrayList<>();
+		
+		try (Connection conn = getDbConn()) {
+			Statement selectStmt = conn.createStatement();
+			String sql = String.format("""
+					SELECT fa.Name, COUNT(1) NumberOfDebits
+					FROM %s t 
+					INNER JOIN %s fa ON t.FromAccountId = fa.AccountId
+					GROUP BY fa.Name
+					ORDER BY COUNT(1) DESC
+					LIMIT 5;
+					""", TRANSACTIONS, ACCOUNTS);
+
+			ResultSet results = selectStmt.executeQuery(sql);
+
+			while (results.next()) {
+				String name = results.getString("Name");
+				Integer numberOfDebits = results.getInt("NumberOfDebits");
+					
+				data.add(new XYChart.Data<String, Integer>(name, numberOfDebits));
+			}
+			
+			return data;			
+		} catch (SQLException se) {
+			throw new IllegalStateException("Unable to get accounts with most debits. " + se.getMessage());
 		}
 	}
 }

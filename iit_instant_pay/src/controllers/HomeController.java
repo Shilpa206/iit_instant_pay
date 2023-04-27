@@ -2,10 +2,9 @@ package controllers;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -13,6 +12,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -22,6 +24,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -39,18 +42,18 @@ public class HomeController {
 
 	@FXML
 	private TabPane tabPane;
-	
-    @FXML
-    private Tab tabRecentTransactions;
-    
-    @FXML
-    private Tab tabPayees;
-    
-    @FXML
-    private Tab tabAnalytics;
-    
-    @FXML
-    private Tab tabAdmin;
+
+	@FXML
+	private Tab tabRecentTransactions;
+
+	@FXML
+	private Tab tabPayees;
+
+	@FXML
+	private Tab tabAnalytics;
+
+	@FXML
+	private Tab tabAdmin;
 
 	// Home
 	@FXML
@@ -79,6 +82,9 @@ public class HomeController {
 
 	@FXML
 	private Button btnSignOut;
+	
+	@FXML
+	private Button btnReload;
 
 	// Payee
 	@FXML
@@ -123,6 +129,19 @@ public class HomeController {
 			this.populateHome(this.bankAccount.getAccountId());
 		}
 	}
+
+	// Analytics
+	@FXML
+	private TextField tfAnalyticsTotalCashReserve;
+
+	@FXML
+	private PieChart pieAnalyticsCashReserve;
+
+	@FXML
+    private BarChart<String, Integer> barChartMostCredits;
+	
+	@FXML
+    private BarChart<String, Integer> barChartMostDebits;
 
 	// Admin
 	@FXML
@@ -225,6 +244,11 @@ public class HomeController {
 	void btnSignOutOnClicked(ActionEvent event) throws IOException {
 		this.loadStart(event);
 	}
+	
+	@FXML
+	void btnReloadOnClicked(ActionEvent event) throws IOException {
+		this.populateHome(this.bankAccount.getAccountId());
+	}
 
 	@FXML
 	void btnSendMoneyOnClicked(ActionEvent event) {
@@ -313,6 +337,41 @@ public class HomeController {
 				btnSendMoney.setDisable(false);
 			}
 		});
+
+		// Analytics tab
+		this.populateAnalytics();
+	}
+
+	public void populateAnalytics() {
+		DaoModel dao = new DaoModel();
+		
+		
+		tfAnalyticsTotalCashReserve.setText(dao.getTotalCaseReserve().toString());
+		
+		ObservableList<PieChart.Data> pieValues = FXCollections.observableArrayList(dao.getCaseReserveShares());
+		
+		
+		this.pieAnalyticsCashReserve.getData().setAll(pieValues);
+		this.pieAnalyticsCashReserve.getData().forEach(data -> {
+			String percentage = String.format("%.2f%%", (data.getPieValue()));
+			Tooltip toolTip = new Tooltip(percentage);
+		    Tooltip.install(data.getNode(), toolTip);
+		});
+		this.pieAnalyticsCashReserve.setLabelLineLength(5);
+		this.pieAnalyticsCashReserve.setLegendVisible(false);
+		
+		
+		// Users with most credits 
+		XYChart.Series<String, Integer> mostCreditsSeries = new XYChart.Series<>(); 
+		mostCreditsSeries.getData().setAll(dao.getAccountsWithMostCredits());
+		this.barChartMostCredits.getData().add(mostCreditsSeries);
+		this.barChartMostCredits.setLegendVisible(false);
+		
+		// Users with most debits
+		XYChart.Series<String, Integer> mostDebitsSeries = new XYChart.Series<>(); 
+		mostDebitsSeries.getData().setAll(dao.getAccountsWithMostDebits());
+		this.barChartMostDebits.getData().add(mostDebitsSeries);
+		this.barChartMostDebits.setLegendVisible(false);
 	}
 
 	/*
