@@ -206,7 +206,8 @@ public class DaoModel {
 					FROM %s p
 					LEFT OUTER JOIN %s a
 					  ON p.PayeeAccountId = a.AccountId
-					WHERE p.PayerAccountId = %s;
+					WHERE p.PayerAccountId = %s
+					  AND Enabled = true;
 					""", PAYEES, ACCOUNTS, accountId);
 
 			ResultSet results = selectStmt.executeQuery(sql);
@@ -297,6 +298,50 @@ public class DaoModel {
 			return results.getString("Message");
 		} catch (SQLException se) {
 			throw new IllegalStateException("Unable to add payee. " + se.getMessage());
+		}
+	}
+	
+	public void updateBankAccount(Integer accountId, String email, String name, Double balance) {
+		try (Connection conn = getDbConn()) {
+			String sql = String.format("""
+					UPDATE %s
+					SET Email = ?, Name = ?, Balance = ?
+					WHERE AccountId = ?;
+					""", ACCOUNTS);
+
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+
+			preparedStmt.setString(1, email);
+			preparedStmt.setString(2, name);
+			preparedStmt.setDouble(3, balance);
+			preparedStmt.setInt(4, accountId);
+
+			preparedStmt.executeUpdate();
+		} catch (SQLException se) {
+			throw new IllegalStateException("Unable to update account. " + se.getMessage());
+		}
+	}
+	
+	/**
+	 * Disable payee
+	 */
+	public void deletePayee(Integer payerAccountId, Integer payeeAccountId) {
+		try (Connection conn = getDbConn()) {
+			String sql = String.format("""
+					UPDATE %s
+					SET Enabled = false
+					WHERE PayerAccountId = ? 
+					  AND PayeeAccountId = ?;
+					""", PAYEES);
+
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+
+			preparedStmt.setInt(1, payerAccountId);
+			preparedStmt.setInt(2, payeeAccountId);
+
+			preparedStmt.executeUpdate();
+		} catch (SQLException se) {
+			throw new IllegalStateException("Unable to remove payee. " + se.getMessage());
 		}
 	}
 }

@@ -99,13 +99,129 @@ public class HomeController {
 					"Payee email cannot be null or empty.");
 			alert.showAndWait();
 		} else {
-			dao.addPayee(this.bankAccount.getAccountId(), payeeEmail);
+			try {
+				dao.addPayee(this.bankAccount.getAccountId(), payeeEmail);
+			}
+			catch(IllegalStateException ise) {
+				Alert alert = CommonUtilities.getErrorWindow("Unable to add payee!", ise.getMessage());
+				alert.showAndWait();
+			}
 
 			// Re-populate the page with new date
 			this.populateHome(this.bankAccount.getAccountId());
 		}
 	}
+	
+	
+	// Admin 
+	@FXML
+	private TextField tfAdminSearchAccountId;
 
+	@FXML
+	private Button btnAdminSearchAccount;
+	
+
+	@FXML
+	private Button btnAdminUpdateAccount;
+
+	@FXML
+	private TextField tfAdminAccountId;
+	
+	@FXML
+	private TextField tfAdminName;
+	
+	@FXML
+	private TextField tfAdminEmail;
+	
+	@FXML
+	private TextField tfAdminBalance;
+	
+
+	@FXML
+	private Button btnAdminDeletePayee;
+	
+	@FXML
+	private TableView<Payee> tableAdminPayees;
+
+	@FXML
+	private TableColumn<Payee, String> tblAdminPayeesColPayeeAccoutNumber;
+
+	@FXML
+	private TableColumn<Payee, String> tblAdminPayeesColPayeeName;
+
+	@FXML
+	private TableColumn<Payee, String> tblAdminPayeesColPayeeEmail;
+
+	@FXML
+	void btnAdminSearchAccountOnClicked(ActionEvent event) {
+		DaoModel dao = new DaoModel();
+		
+		Integer accountId = Integer.parseInt(tfAdminSearchAccountId.getText());
+
+		try {
+			BankAccount bankAccount = dao.getBankAccountById(accountId);
+			
+			// Re-populate the page with new date
+			this.populateAdmin(bankAccount);
+		}
+		catch(IllegalStateException ise) {
+			Alert alert = CommonUtilities.getErrorWindow("Account not found!", ise.getMessage());
+			alert.showAndWait();
+		}
+	}
+	
+	@FXML
+	void btnAdminUpdateAccountOnClicked(ActionEvent event) {
+		DaoModel dao = new DaoModel();
+		
+		try {
+			dao.updateBankAccount(
+					Integer.parseInt(tfAdminAccountId.getText()),
+					tfAdminEmail.getText(),
+					tfAdminName.getText(),
+					Double.parseDouble(tfAdminBalance.getText())
+			);
+			
+			Alert alert = CommonUtilities.getSuccessWindow("Success!", "Account successfully updated!");
+			alert.showAndWait();
+			
+			BankAccount bankAccount = dao.getBankAccountById(Integer.parseInt(tfAdminAccountId.getText()));
+			
+			// Re-populate the page with new date
+			this.populateAdmin(bankAccount);
+		}
+		catch(IllegalStateException ise) {
+			Alert alert = CommonUtilities.getErrorWindow("Account not found!", ise.getMessage());
+			alert.showAndWait();
+		}
+	}
+	
+	@FXML
+	void btnAdminDeletePayeeOnClicked(ActionEvent event) {
+		DaoModel dao = new DaoModel();
+		
+		try {
+			Payee payee = this.tableAdminPayees.getSelectionModel().selectedItemProperty().getValue();
+
+			dao.deletePayee(
+				Integer.parseInt(tfAdminAccountId.getText()),
+				payee.getAccountId()
+			);
+			
+			Alert alert = CommonUtilities.getSuccessWindow("Success!", "Payee successfully deleted!");
+			alert.showAndWait();
+			
+			BankAccount bankAccount = dao.getBankAccountById(Integer.parseInt(tfAdminAccountId.getText()));
+			
+			// Re-populate the page with new date
+			this.populateAdmin(bankAccount);
+		}
+		catch(IllegalStateException ise) {
+			Alert alert = CommonUtilities.getErrorWindow("Unable to delete payee!", ise.getMessage());
+			alert.showAndWait();
+		}
+	}
+	
 	@FXML
 	void btnSignOutOnClicked(ActionEvent event) throws IOException {
 		this.loadStart(event);
@@ -164,12 +280,12 @@ public class HomeController {
 	}
 
 	/*
-	 * Populates the values in home screen using information of given user
+	 * Populates the values in home screen using information of given account id
 	 */
 	public void populateHome(Integer accountId) {
 		DaoModel dao = new DaoModel();
 
-		System.out.println("Populating home for user id: " + accountId);
+		System.out.println("Populating home for account id: " + accountId);
 
 		BankAccount bankAccount = dao.getBankAccountById(accountId);
 
@@ -197,6 +313,34 @@ public class HomeController {
 		this.tablePayees.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
 			if (newSelection != null) {
 				btnSendMoney.setDisable(false);
+			}
+		});
+	}
+	
+	/*
+	 * Populates the values in admin screen using information of given account
+	 */
+	public void populateAdmin(BankAccount bankAccount) {
+		System.out.println("Populating admin screen for email: " + bankAccount.getEmail());
+
+
+		this.tfAdminAccountId.setText(bankAccount.getAccountId().toString());
+		this.tfAdminName.setText(bankAccount.getName());
+		this.tfAdminEmail.setText(bankAccount.getEmail());
+		this.tfAdminBalance.setText(bankAccount.getBalance().toString());
+
+		// Populate payees table
+		tblAdminPayeesColPayeeAccoutNumber.setCellValueFactory(new PropertyValueFactory<>("accountId"));
+		tblAdminPayeesColPayeeName.setCellValueFactory(new PropertyValueFactory<>("name"));
+		tblAdminPayeesColPayeeEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
+
+		this.tableAdminPayees.getItems().setAll(bankAccount.getPayees());
+		
+		btnAdminUpdateAccount.setDisable(false);
+
+		this.tableAdminPayees.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+			if (newSelection != null) {
+				btnAdminDeletePayee.setDisable(false);
 			}
 		});
 	}

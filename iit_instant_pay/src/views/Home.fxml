@@ -68,7 +68,7 @@
                         <Line endX="690.0" endY="380.0" fill="black" layoutX="90.0" layoutY="-320.0" opacity="0.6" startX="-75" startY="380.0" stroke="#4d0f0f" strokeLineJoin="BEVEL" strokeWidth="2.0" />
                         <AnchorPane layoutX="13.0" layoutY="70.0" prefHeight="454.0" prefWidth="769.0" styleClass="subregion">
                            <children>
-                              <Label layoutX="14.0" layoutY="3.0" styleClass="h2black" text="Payees:" />
+                              <Label layoutX="10.0" layoutY="3.0" styleClass="h2black" text="Payees:" />
                               <TableView fx:id="tablePayees" layoutX="10.0" layoutY="36.0" prefHeight="408.0" prefWidth="750.0">
                                 <columns>
 	                              <TableColumn fx:id="tblColPayeeAccoutNumber" prefWidth="150" text="Account Number" />
@@ -89,9 +89,38 @@
               </content>
             </Tab>
             <Tab text="Admin">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-              </content>
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="mainscreen">
+                     <children>
+                        <Button fx:id="btnAdminSearchAccount" layoutX="521.0" layoutY="12.0" mnemonicParsing="false" onAction="#btnAdminSearchAccountOnClicked" prefHeight="31.0" prefWidth="125" text="Search" />
+                        <TextField fx:id="tfAdminSearchAccountId" layoutX="164.0" layoutY="12.0" prefHeight="31.0" prefWidth="349.0" promptText="Account ID" />
+                        <Label layoutX="14.0" layoutY="14.0" styleClass="h2black" text="Lookup Account:" />
+                        <Line endX="690.0" endY="380.0" fill="black" layoutX="90.0" layoutY="-320.0" opacity="0.6" startX="-75" startY="380.0" stroke="#4d0f0f" strokeLineJoin="BEVEL" strokeWidth="2.0" />
+                        <AnchorPane layoutX="13.0" layoutY="68.0" prefHeight="461.0" prefWidth="769.0" styleClass="subregion">
+                           <children>
+                              <Label layoutX="10.0" layoutY="163.0" styleClass="h2black" text="Payees:" />
+                              <TableView fx:id="tableAdminPayees" layoutX="10.0" layoutY="196.0" prefHeight="259.0" prefWidth="750.0">
+                                <columns>
+	                              <TableColumn fx:id="tblAdminPayeesColPayeeAccoutNumber" prefWidth="150" text="Account Number" />
+                                  <TableColumn fx:id="tblAdminPayeesColPayeeName" prefWidth="250" text="Name" />
+                                  <TableColumn fx:id="tblAdminPayeesColPayeeEmail" prefWidth="345" text="Email" />
+                                </columns>
+                              </TableView>
+                              <Label layoutX="10.0" layoutY="79.0" styleClass="h2black" text="Name:" />
+                              <Label layoutX="308.0" layoutY="79.0" styleClass="h2black" text="Email:" />
+                              <Label layoutX="308.0" layoutY="8.0" styleClass="h2black" text="Balance:" />
+                              <TextField fx:id="tfAdminName" layoutX="10.0" layoutY="106.0" prefHeight="31.0" prefWidth="275.0" promptText="Name" />
+                              <TextField fx:id="tfAdminEmail" layoutX="308.0" layoutY="106.0" prefHeight="31.0" prefWidth="445.0" promptText="Email" />
+                              <TextField fx:id="tfAdminBalance" layoutX="308.0" layoutY="35.0" promptText="Balance" />
+                              <Button fx:id="btnAdminDeletePayee" disable="true" layoutX="630.0" layoutY="161.0" mnemonicParsing="false" onAction="#btnAdminDeletePayeeOnClicked" prefHeight="31.0" prefWidth="125" text="Delete Payee" />
+                              <TextField fx:id="tfAdminAccountId" editable="false" layoutX="10.0" layoutY="37.0" prefHeight="31.0" prefWidth="273.0" promptText="Account ID" />
+                              <Label layoutX="10.0" layoutY="10.0" styleClass="h2black" text="Account ID:" />
+                           </children>
+                        </AnchorPane>
+                        <Label layoutX="25.0" layoutY="529.0" styleClass="h3black" text="Help: Select payee and click Delete to remove payee" />
+                        <Button fx:id="btnAdminUpdateAccount" disable="true" layoutX="656.0" layoutY="12.0" mnemonicParsing="false" onAction="#btnAdminUpdateAccountOnClicked" prefHeight="31.0" prefWidth="125" text="Update" />
+                     </children></AnchorPane>
+            </content>
             </Tab>
         </tabs>
       </TabPane>
