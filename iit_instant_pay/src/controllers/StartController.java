@@ -58,6 +58,7 @@ public class StartController {
 			accountId = dao.validateCredentials(tfLoginEmail.getText(), tfLoginPassword.getText());
 			areCredentialsValid = true;
 		} catch (IllegalAccessException e) {
+			System.out.println("Credential validation failed.");
 			Alert alert = CommonUtilities.getErrorWindow("Login failed!", e.getMessage());
 			alert.showAndWait();
 		}
@@ -83,6 +84,7 @@ public class StartController {
 	}
 	
 	void loadHome(Event event, Integer accountId) throws IOException {
+		System.out.println("Loading home page.");
 		FXMLLoader loader = new FXMLLoader(CommonUtilities.getViewUrl("Home.fxml"));
 		Parent root = loader.load();
 
@@ -90,9 +92,11 @@ public class StartController {
 		homeController.populateHome(accountId);
 
 		if(accountId.intValue() == ADMIN_ACCOUNT_ID.intValue()) {
+			System.out.println("Detected admin user. Loading admin view.");
 			homeController.showAdminTabs();
 		}
 		else {
+			System.out.println("Detected regular user. Loading client view.");
 			homeController.showUserTabs();
 		}
 				

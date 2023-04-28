@@ -110,6 +110,7 @@ public class HomeController {
 
 	@FXML
 	void btnAddPayeeOnClicked(ActionEvent event) {
+		System.out.println("Adding payee.");
 		DaoModel dao = new DaoModel();
 		String payeeEmail = tfAddPayeeEmail.getText();
 
@@ -120,6 +121,7 @@ public class HomeController {
 		} else {
 			try {
 				dao.addPayee(this.bankAccount.getAccountId(), payeeEmail);
+				System.out.println("Payee added.");
 			} catch (IllegalStateException ise) {
 				Alert alert = CommonUtilities.getErrorWindow("Unable to add payee!", ise.getMessage());
 				alert.showAndWait();
@@ -185,6 +187,7 @@ public class HomeController {
 		DaoModel dao = new DaoModel();
 
 		Integer accountId = Integer.parseInt(tfAdminSearchAccountId.getText());
+		System.out.println("Searching for account id:" + accountId);
 
 		try {
 			BankAccount bankAccount = dao.getBankAccountById(accountId);
@@ -209,7 +212,7 @@ public class HomeController {
 			alert.showAndWait();
 
 			BankAccount bankAccount = dao.getBankAccountById(Integer.parseInt(tfAdminAccountId.getText()));
-
+			
 			// Re-populate the page with new date
 			this.populateAdmin(bankAccount);
 		} catch (IllegalStateException ise) {
@@ -343,6 +346,7 @@ public class HomeController {
 	}
 
 	public void populateAnalytics() {
+		System.out.println("Populating analytics tab.");
 		DaoModel dao = new DaoModel();
 		
 		
@@ -350,6 +354,7 @@ public class HomeController {
 		
 		ObservableList<PieChart.Data> pieValues = FXCollections.observableArrayList(dao.getCaseReserveShares());
 		
+		System.out.println("Populating pie chart.");
 		this.pieAnalyticsCashReserve.getData().clear();
 		this.pieAnalyticsCashReserve.getData().setAll(pieValues);
 		this.pieAnalyticsCashReserve.getData().forEach(data -> {
@@ -360,7 +365,7 @@ public class HomeController {
 		this.pieAnalyticsCashReserve.setLabelLineLength(5);
 		this.pieAnalyticsCashReserve.setLegendVisible(false);
 		
-		
+		System.out.println("Populating most credits bar chart.");
 		// Users with most credits 
 		XYChart.Series<String, Integer> mostCreditsSeries = new XYChart.Series<>(); 
 		mostCreditsSeries.getData().setAll(dao.getAccountsWithMostCredits());
@@ -368,6 +373,7 @@ public class HomeController {
 		this.barChartMostCredits.getData().add(mostCreditsSeries);
 		this.barChartMostCredits.setLegendVisible(false);
 		
+		System.out.println("Populating most debits bar chart.");
 		// Users with most debits
 		XYChart.Series<String, Integer> mostDebitsSeries = new XYChart.Series<>(); 
 		mostDebitsSeries.getData().setAll(dao.getAccountsWithMostDebits());

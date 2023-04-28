@@ -55,6 +55,7 @@ public class DaoModel {
 	}
 
 	public Integer validateCredentials(String email, String password) throws IllegalAccessException {
+		System.out.println("Validating credentials of: " + email);
 		try (Connection conn = getDbConn()) {
 			Statement selectStmt = conn.createStatement();
 			String sql = String.format("SELECT AccountId, Name, Email, Password FROM %s WHERE Email = '%s';", ACCOUNTS,
@@ -92,6 +93,7 @@ public class DaoModel {
 	 * Generate bank account object for given account id
 	 */
 	public BankAccount getBankAccountById(Integer accountId) {
+		System.out.println("Getting bank account details of account id: " + accountId);
 		BankAccount bankAccount = new BankAccount();
 		bankAccount.setAccountId(accountId);
 
@@ -117,6 +119,7 @@ public class DaoModel {
 				bankAccount.setPayees(payees);
 				bankAccount.setRecentTransactions(recentTransactions);
 
+				System.out.println("Bank account details fetched.");
 				return bankAccount;
 			}
 		} catch (SQLException se) {
@@ -125,6 +128,7 @@ public class DaoModel {
 	}
 
 	public BankAccount getBankAccountByEmail(String email) {
+		System.out.println("Getting bank account details of email: " + email);
 		BankAccount bankAccount = new BankAccount();
 
 		try {
@@ -149,6 +153,7 @@ public class DaoModel {
 				bankAccount.setPayees(payees);
 				bankAccount.setRecentTransactions(recentTransactions);
 
+				System.out.println("Bank account details fetched.");
 				return bankAccount;
 			}
 		} catch (SQLException se) {
@@ -157,6 +162,7 @@ public class DaoModel {
 	}
 
 	public List<RecentTransaction> getRecentTransactions(Integer accountId) {
+		System.out.println("Getting recent transactions for: " + accountId);
 		List<RecentTransaction> recentTransactions = new ArrayList<RecentTransaction>();
 
 		try (Connection conn = getDbConn()) {
@@ -207,8 +213,8 @@ public class DaoModel {
 
 					recentTransactions.add(t);
 				}
+				System.out.println("Fetched recent transactions.");
 			}
-
 			return recentTransactions;
 		} catch (SQLException se) {
 			throw new IllegalStateException("Unable to fetch recent transactions. " + se.getMessage());
@@ -216,6 +222,7 @@ public class DaoModel {
 	}
 
 	public List<Payee> getPayees(Integer accountId) {
+		System.out.println("Getting payees for: " + accountId);
 		List<Payee> payees = new ArrayList<Payee>();
 
 		try (Connection conn = getDbConn()) {
@@ -243,6 +250,7 @@ public class DaoModel {
 
 					payees.add(p);
 				}
+				System.out.println("Fetched payees.");
 			}
 
 			return payees;
@@ -252,6 +260,7 @@ public class DaoModel {
 	}
 
 	public BankAccount createAccount(String name, String email, String password) {
+		System.out.println("Creating bank account for email: " + email);
 		try (Connection conn = getDbConn()) {
 			Double initialBalance = 1000.0;
 
@@ -271,7 +280,8 @@ public class DaoModel {
 			preparedStmt.setDouble(4, initialBalance);
 
 			preparedStmt.executeUpdate();
-
+			
+			System.out.println("Bank account successfully created.");
 			return this.getBankAccountByEmail(email);
 		} catch (SQLException se) {
 			throw new IllegalStateException("Unable to create account. " + se.getMessage());
@@ -279,6 +289,7 @@ public class DaoModel {
 	}
 
 	public void addPayee(Integer payerAccountId, String payeeEmail) {
+		System.out.println("Adding payee: " + payeeEmail + " to: " + payerAccountId);
 		BankAccount payeeBankAccount = this.getBankAccountByEmail(payeeEmail);
 
 		try (Connection conn = getDbConn()) {
@@ -294,12 +305,14 @@ public class DaoModel {
 			preparedStmt.setInt(2, payeeBankAccount.getAccountId());
 
 			preparedStmt.executeUpdate();
+			System.out.println("Payee successfully added.");
 		} catch (SQLException se) {
 			throw new IllegalStateException("Unable to add payee. " + se.getMessage());
 		}
 	}
 
 	public String executeTransfer(Integer fromAccountId, Integer toAccountId, Double amount, String remarks) {
+		System.out.println("Executing transfer from: " + fromAccountId + " to: " + toAccountId);
 		try (Connection conn = getDbConn()) {
 			String sql = String.format("""
 					CALL IP_Transfer(?, ?, ?, ?);
@@ -323,6 +336,7 @@ public class DaoModel {
 	}
 	
 	public void updateBankAccount(Integer accountId, String email, String name, Double balance) {
+		System.out.println("Updating account.");
 		try (Connection conn = getDbConn()) {
 			String sql = String.format("""
 					UPDATE %s
@@ -338,6 +352,7 @@ public class DaoModel {
 			preparedStmt.setInt(4, accountId);
 
 			preparedStmt.executeUpdate();
+			System.out.println("Account updated.");
 		} catch (SQLException se) {
 			throw new IllegalStateException("Unable to update account. " + se.getMessage());
 		}
@@ -347,6 +362,7 @@ public class DaoModel {
 	 * Disable payee
 	 */
 	public void deletePayee(Integer payerAccountId, Integer payeeAccountId) {
+		System.out.println("Deleting payee: " + payeeAccountId + " from: " + payerAccountId);
 		try (Connection conn = getDbConn()) {
 			String sql = String.format("""
 					UPDATE %s
@@ -361,6 +377,7 @@ public class DaoModel {
 			preparedStmt.setInt(2, payeeAccountId);
 
 			preparedStmt.executeUpdate();
+			System.out.println("Payee deleted.");
 		} catch (SQLException se) {
 			throw new IllegalStateException("Unable to remove payee. " + se.getMessage());
 		}
