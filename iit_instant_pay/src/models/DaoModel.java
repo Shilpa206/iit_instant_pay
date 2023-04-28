@@ -16,9 +16,9 @@ import utils.CommonUtilities;
  * Class to interact with database
  */
 public class DaoModel {
-	public static final String ACCOUNTS = "Accounts";
-	public static final String TRANSACTIONS = "Transactions";
-	public static final String PAYEES = "Payees";
+	public static final String ACCOUNTS = "IP_Accounts";
+	public static final String TRANSACTIONS = "IP_Transactions";
+	public static final String PAYEES = "IP_Payees";
 
 	DBConnect db = null;
 
@@ -302,7 +302,7 @@ public class DaoModel {
 	public String executeTransfer(Integer fromAccountId, Integer toAccountId, Double amount, String remarks) {
 		try (Connection conn = getDbConn()) {
 			String sql = String.format("""
-					CALL Transfer(?, ?, ?, ?);
+					CALL IP_Transfer(?, ?, ?, ?);
 					""", PAYEES);
 
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
@@ -318,7 +318,7 @@ public class DaoModel {
 			
 			return results.getString("Message");
 		} catch (SQLException se) {
-			throw new IllegalStateException("Unable to add payee. " + se.getMessage());
+			throw new IllegalStateException("Unable to make payment. " + se.getMessage());
 		}
 	}
 	
@@ -418,8 +418,8 @@ public class DaoModel {
 			Statement selectStmt = conn.createStatement();
 			String sql = String.format("""
 					SELECT ta.Name, COUNT(1) NumberOfCredits
-					FROM Transactions t 
-					INNER JOIN Accounts ta ON t.ToAccountId = ta.AccountId
+					FROM %s t 
+					INNER JOIN %s ta ON t.ToAccountId = ta.AccountId
 					GROUP BY ta.Name
 					ORDER BY COUNT(1) DESC
 					LIMIT 5;

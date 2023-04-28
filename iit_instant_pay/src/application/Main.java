@@ -14,6 +14,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
+			System.out.println("Starting application.");
 			Parent root = FXMLLoader.load(CommonUtilities.getViewUrl("Start.fxml"));
 			Scene scene = new Scene(root);
 			
