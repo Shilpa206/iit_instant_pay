@@ -232,8 +232,7 @@ public class DaoModel {
 					FROM %s p
 					LEFT OUTER JOIN %s a
 					  ON p.PayeeAccountId = a.AccountId
-					WHERE p.PayerAccountId = %s
-					  AND Enabled = true;
+					WHERE p.PayerAccountId = %s;
 					""", PAYEES, ACCOUNTS, accountId);
 
 			ResultSet results = selectStmt.executeQuery(sql);
@@ -365,8 +364,7 @@ public class DaoModel {
 		System.out.println("Deleting payee: " + payeeAccountId + " from: " + payerAccountId);
 		try (Connection conn = getDbConn()) {
 			String sql = String.format("""
-					UPDATE %s
-					SET Enabled = false
+					DELETE FROM %s
 					WHERE PayerAccountId = ? 
 					  AND PayeeAccountId = ?;
 					""", PAYEES);

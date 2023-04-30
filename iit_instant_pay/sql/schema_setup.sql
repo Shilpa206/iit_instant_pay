@@ -32,7 +32,6 @@ CREATE TABLE IP_Payees (
     PayeeId int NOT NULL AUTO_INCREMENT,
     PayerAccountId int NOT NULL,
     PayeeAccountId int NOT NULL,
-    Enabled boolean NOT NULL DEFAULT TRUE,
     PRIMARY KEY (PayeeId),
     FOREIGN KEY (PayerAccountId) REFERENCES IP_Accounts(AccountId),
     FOREIGN KEY (PayeeAccountId) REFERENCES IP_Accounts(AccountId),
